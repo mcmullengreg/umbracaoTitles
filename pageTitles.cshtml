@@ -1,49 +1,14 @@
+@using umbraco.MacroEngines
+@inherits umbraco.MacroEngines.DynamicNodeContext
 @{
-	var mainSite = "";
-	var pagesTitle = "";
-	var CatTitle = "";
-	var Level4Parent = "";
-	var Level5 = "";
-	@* - HOMEPAGE TITLE - *@
-	if ( @Model.Level <= 1 && @Model.AncestorOrSelf(1).HasValue("pageTitle") ) { 
-		rose = @Model.AncestorOrSelf(1).pageTitle; } 
-	else {
-		rose = "DEFAULT SITE TITLE";
-	}
-	@* - END HOMEPAGE TITLE - *@
-	@* Check Level so as to not confuse the homepage title code 
-	@* Only check vars on Level 2 or above -*@
-	if ( @Model.Level >= 2 ){
-	@* - Define the variables for each level of pages (up to 5) - *@	
-		if ( @Model.HasValue("pageTitle") ) {
-			pagesTitle = @Model.pageTitle;
-		} else {
-			pagesTitle = @Model.Name;
-		}
-		if ( @Model.AncestorOrSelf(2).HasValue("pageTitle") ) {
-			CatTitle = @Model.AncestorOrSelf(2).pageTitle;
-		}  else {
-			CatTitle = @Model.AncestorOrSelf(2).Name;
-		}
-		if ( @Model.Parent.HasValue("pageTitle") ) {
-			Level4Parent = @Model.Parent.pageTitle;
-		} else {
-			Level4Parent = @Model.Parent.Name;
-		}
-	}
-	@* - Output the page titles
-	@* - Note the various levels and title structures - *@
-	if ( @Model.Level == 1 ){
-		@rose 
-	} else if ( @Model.Level == 2 ) { 
-		@pagesTitle @Html.Raw(" | ") @mainSite 
-	} else if ( @Model.Level == 3 ) { 
-		@pagesTitle @Html.Raw(" - ") @CatTitle @Html.Raw(" | ") @mainSite 
-	} else if ( @Model.Level == 4 ) { 
-		@pagesTitle @Html.Raw(" - ") @Level4Parent @Html.Raw(" - ") @CatTitle @Html.Raw(" | ") @mainSite 
-	} else if ( @Model.Level >= 5 ) {
-		@pagesTitle @Html.Raw(" - ") @Level4Parent @Html.Raw(" - ") @Model.Parent.Parent.Name @Html.Raw(" - ") @CatTitle @Html.Raw(" | ") @mainSite
-	} else { 
-		@pagesTitle @Html.Raw(" | ") @mainSite 
-	}
+	var pageLevel = @Model.Level;
+	var current = ""; 
+	for (var i = pageLevel; i >= 1; i--){	
+		var divider = (i == 2) ? " | " : @* If  at Level 2, add the pipe at the end, otherwise *@
+					  (i > 2) ? " - " : ""; @* if >2 add a hyphen between, then do nothing (for level 1) *@
+		current += (Model.AncestorOrSelf(i).HasValue("shortPageTitle") && pageLevel != 1) ? Model.AncestorOrSelf(i).shortPageTitle + divider : 
+		           (Model.AncestorOrSelf(i).HasValue("pageTitle")) ? Model.AncestorOrSelf(i).pageTitle + divider : 
+		            Model.AncestorOrSelf(i).Name + divider;
+	}	
 }
+@current
