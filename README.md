@@ -1,8 +1,6 @@
 #Umbraco Title Tags
 
-This code is a cleaned up version of a previously posted git. It uses the level of a node to define the loop 
-
-process.
+This code is a cleaned up version of a previously posted git. It uses the level of a node to define the loop process.
 
 ##Assumptions
 1. You are using razor to build macros
@@ -11,7 +9,7 @@ process.
 
 This code is provided as is with no support. 
 
-##Code Breakdown
+###Code Breakdown
 
 Define variables, clear `var current`
 
@@ -43,5 +41,5 @@ Output the page title to your screen
 
     @current
 
-##Adjustments
+###Adjustments
 Adjust as you see fit to meet your needs.
